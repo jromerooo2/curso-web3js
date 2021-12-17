@@ -9,6 +9,7 @@ import {
     Td,
     Tbody,
     Button,
+    useToast,
     Tag,
   } from "@chakra-ui/react";
   import { useWeb3React } from "@web3-react/core";
@@ -17,14 +18,60 @@ import {
   import { useMyPunkData } from "../../hooks/useMyPunksData";
   import { useParams } from "react-router-dom";
   import Loading from "../../components/loading";
-  
+ import { useState } from "react"; 
+import useMyPunks from "../../hooks/useMyPunks";
+
   const Punk = () => {
-    const { active, account } = useWeb3React();
-
+    const { active, account,library } = useWeb3React();
     const { tokenId } = useParams();
+    const myPunks = useMyPunks();
+    const { loading, punk,update } = useMyPunkData(tokenId);
 
-    const { loading, punk } = useMyPunkData(tokenId);
+    const toast = useToast();
+    const [transfering, setTransfering] = useState(false);
+    const transfer = () => {
+        setTransfering(true);
+        const address = prompt("A quien desea transferir el punk?");
+        const isAddress = library.utils.isAddress(account);
 
+        if (!isAddress) {
+            toast({
+              title: "Error",
+              description: "La dirección no es válida en Ethereum",
+              status: "error",
+            })
+            setTransfering(false);
+        }else{
+          myPunks.methods.safeTransferFrom(
+            punk.owner, 
+            address, 
+            tokenId).send({from: account})
+            .on('transactionHash', (hash) => {
+              toast({
+                title: "Transferencia en proceso",
+                description: hash,
+                status: "info",
+                duration: 9000,
+                isClosable: true,
+              })
+            })
+            .on('error', (error) => {
+              setTransfering(false);
+            })
+            .on('receipt', (receipt) => {
+              setTransfering(false);
+              toast({
+                title: "Transferencia en proceso",
+                description: `El punk ha sido transferido a ${address}`,
+                status: "success",
+                duration: 9000,
+                isClosable: true,
+              })
+              update()              
+            })
+        }
+
+    }
   
     if (!active) return <RequestAccess />;
   
@@ -45,7 +92,10 @@ import {
             name={punk.name}
             image={punk.image}
           />
-          <Button disabled={account !== punk.owner} colorScheme="green">
+          <Button
+          onClick={transfer}
+          disabled={account !== punk.owner} colorScheme="green"
+          isLoading={transfering}>
             {account !== punk.owner ? "No eres el dueño" : "Transferir"}
           </Button>
         </Stack>
