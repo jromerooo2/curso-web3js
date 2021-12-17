@@ -54,9 +54,11 @@ import {
           <Text fontSize="xl">{punk.description}</Text>
           <Text fontWeight={600}>
             DNA:
-            <Tag ml={2} colorScheme="green">
+            <Tag ml={2}
+            wordBreak="break-all"
+             colorScheme="green">
               { punk.dna }
-            </Tag>
+          </Tag>
           </Text>
           <Text fontWeight={600}>
             Owner:
