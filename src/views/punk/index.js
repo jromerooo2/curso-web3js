@@ -32,13 +32,14 @@ import useMyPunks from "../../hooks/useMyPunks";
     const transfer = () => {
         setTransfering(true);
         const address = prompt("A quien desea transferir el punk?");
-        const isAddress = library.utils.isAddress(account);
+        const isAddress = library.utils.isAddress(address);
 
         if (!isAddress) {
             toast({
               title: "Error",
               description: "La dirección no es válida en Ethereum",
               status: "error",
+              isClosable: true,
             })
             setTransfering(false);
         }else{
@@ -49,7 +50,7 @@ import useMyPunks from "../../hooks/useMyPunks";
             .on('transactionHash', (hash) => {
               toast({
                 title: "Transferencia en proceso",
-                description: hash,
+                description: "Transaction hash: " + hash,
                 status: "info",
                 duration: 9000,
                 isClosable: true,

@@ -96,7 +96,7 @@ const Home = () => {
           </Text>
           <br />
           <Text as={"span"} color={"green.300"}>
-            Jamás para de rockear.
+            Jamás para de bellakear.
           </Text>
         </Heading>
         <Text color={"gray.500"}>
