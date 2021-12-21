@@ -1,5 +1,6 @@
-import { useState, useCallback,useEffect } from "react"
+import { useState,useCallback,useEffect } from "react"
 import useMyPunks  from "../useMyPunks"
+import { useWeb3React } from "@web3-react/core";
 
 const getPunkData = async({
     myPunks, tokenId,
@@ -55,20 +56,33 @@ const getPunkData = async({
     }
 }
 
-const useMyPunksData = () => {
+const useMyPunksData = ({ owner = null } = {}) => {
 
     const[punks,setPunks] = useState([]);
-
+    const { library } = useWeb3React();
     const[loading,setLoading] = useState(true);
     const myPunks = useMyPunks();
+
 
     const update = useCallback(async()=>{
         if(myPunks){
             setLoading(true)
             let tokenIds;
 
-            const totalSupply =  await myPunks.methods.totalSupply().call();
-            tokenIds = Array(Number(totalSupply)).fill().map((_,i)=>i);
+            if(!library.utils.isAddress(owner)){
+                const totalSupply =  await myPunks.methods.totalSupply().call();
+                tokenIds = Array(Number(totalSupply)).fill().map((_,i)=>i);
+            }else{
+                const balanceOf = await myPunks.methods.balanceOf(owner).call();
+                const tokenIdsofOwner = new Array(Number(balanceOf))
+                .fill()
+                .map((_,i)=>
+                myPunks.methods.tokenOfOwnerByIndex(owner,i).call()               
+                );
+
+                tokenIds = await Promise.all(tokenIdsofOwner)
+            }
+            
 
             const punksPromise = tokenIds.map((tokenId)=>
                 getPunkData({myPunks,tokenId})
