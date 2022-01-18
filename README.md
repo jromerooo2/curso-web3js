@@ -1,4 +1,4 @@
-# My Punks Interface  
+# 🎸 My Punks Interface  🎸
 This is the frontend Dapp made for MyPunks NFTs collection.
 Created with react and Uniswap protocols 🦄.
 You can visit and mint some NFTs in : 
