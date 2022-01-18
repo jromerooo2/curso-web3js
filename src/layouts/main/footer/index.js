@@ -30,7 +30,11 @@ const Footer = () => {
           <Text>
             © {new Date().getFullYear()} Original designs by
             <Link ml={1} href="https://twitter.com/pablostanley">
-              Pablo Stanley 🎨
+              Pablo Stanley 🎨 
+            </Link>
+            Programmed By 
+            <Link ml={1} href="https://twitter.com/jromerooo2">
+              Juan Romero 👨‍💻 
             </Link>
           </Text>
         </Container>
