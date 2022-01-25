@@ -109,6 +109,9 @@ const Home = () => {
           usa el previsualizador para averiguar cuál sería tu MyPunk si
           minteas en este momento.
         </Text>
+        <Text color={"red.500"}>
+          Recuerda descargar MetaMask para poder acceder a la app :).
+        </Text>
         <Stack
           spacing={{ base: 4, sm: 6 }}
           direction={{ base: "column", sm: "row" }}
